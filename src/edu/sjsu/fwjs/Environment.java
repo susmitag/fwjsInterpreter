@@ -28,12 +28,13 @@ public class Environment {
      */
     public Value resolveVar(String varName) {
         // YOUR CODE HERE
-        if (env.containsKey(varName)){
+        if (env.get(varName) != null){
             return env.get(varName);
-        }else if(outerEnv != null) {
+        }
+        if(outerEnv != null) {
             return outerEnv.resolveVar(varName);
         }
-        return null;
+        return new NullVal();
     }
 
     /**
@@ -43,10 +44,11 @@ public class Environment {
      */
     public void updateVar(String key, Value v) {
         // YOUR CODE HERE
-        if (env.containsKey(key)){
+        if (env.get(key) != null){
             env.put(key, v);
             return;
-        }else if (outerEnv != null) {
+        }
+        if (outerEnv != null) {
             outerEnv.updateVar(key, v);
             return;
         }
@@ -60,10 +62,10 @@ public class Environment {
      */
     public void createVar(String key, Value v) {
         // YOUR CODE HERE
-        if(!env.containsKey(key)) {
+        if(env.get(key) == null) {
             env.put(key, v);
         } else {
-            throw new RuntimeException("Variable '" + key + "' has been defined in the current scope previously.");
+            throw new RuntimeException("Variable " + key + " has been defined in the current scope previously.");
         }
     }
 }

@@ -117,7 +117,12 @@ class IfExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        if(((BoolVal)cond.evaluate(env)).toBoolean()) {
+            return thn.evaluate(env);
+        } else if(els != null) {
+            return els.evaluate(env);
+        }
+        return new NullVal();
     }
 }
 
@@ -133,7 +138,11 @@ class WhileExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        Value retVal = new NullVal();
+        while(((BoolVal) cond.evaluate(env)).toBoolean()) {
+            retVal = body.evaluate(env);
+        }
+        return retVal;
     }
 }
 
@@ -149,7 +158,8 @@ class SeqExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        e1.evaluate(env);
+        return e2.evaluate(env);
     }
 }
 
@@ -165,7 +175,9 @@ class VarDeclExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        Value v = exp.evaluate(env);
+        env.createVar(varName, v);
+        return env.resolveVar(varName);
     }
 }
 
@@ -183,7 +195,9 @@ class AssignExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        Value v = e.evaluate(env);
+        env.updateVar(varName, v);
+        return env.resolveVar(varName);
     }
 }
 
@@ -199,7 +213,7 @@ class FunctionDeclExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        return new ClosureVal(params, body, env);
     }
 }
 
@@ -215,7 +229,11 @@ class FunctionAppExpr implements Expression {
     }
     public Value evaluate(Environment env) {
         // YOUR CODE HERE
-        return null;
+        ClosureVal val = (ClosureVal) f.evaluate(env);
+        List<Value> evalArgs = new ArrayList<Value>();
+        for(int i = 0; i < args.size(); i++) {
+            evalArgs.add(args.get(i).evaluate(env));
+        }
+        return val.apply(evalArgs);
     }
 }
-
